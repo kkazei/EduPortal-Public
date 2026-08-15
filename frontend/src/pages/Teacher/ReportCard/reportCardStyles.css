@@ -1,0 +1,120 @@
+/* Modern screen styling without affecting absolute layout */
+.report-card-page {
+  background: #ffffff;
+  position: relative;
+}
+
+@media screen {
+  .report-card-page {
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow .3s ease;
+    /* A4 landscape approximate size for preview */
+    width: 1140px; /* ~297mm at 96dpi */
+    min-height: 800px; /* ~210mm at 96dpi */
+    margin: 0 auto 2rem;
+    background-image: radial-gradient(circle at 20% 20%, rgba(0,0,0,0.015) 0, transparent 40%), radial-gradient(circle at 80% 50%, rgba(0,0,0,0.02) 0, transparent 45%);
+    background-repeat: no-repeat;
+  }
+  .report-card-page:hover {
+    box-shadow: 0 6px 28px rgba(0,0,0,0.12);
+  }
+  body {
+    background: linear-gradient(135deg,#f5f7fa,#e9ecf1);
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color: #1f2937;
+  }
+  /* Improve top control buttons subtly */
+  .print\:hidden button {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .print\:hidden button:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+  /* Modern toolbar styling */
+  .card-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(145deg,#ffffff,#f5f7fa);
+    border: 1px solid #e2e8f0;
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px -2px rgba(17,24,39,0.08), 0 2px 4px -1px rgba(17,24,39,0.04);
+    backdrop-filter: blur(4px);
+  }
+  .card-toolbar + .card-toolbar { margin-top: .75rem; }
+  .card-toolbar__group { display:flex; align-items:center; gap:.65rem; }
+  .card-toolbar select {
+    appearance: none;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: .55rem 2.2rem .55rem .9rem;
+    font-size: .8rem;
+    font-weight: 500;
+    color:#1f2937;
+    line-height:1;
+    position:relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .card-toolbar select:focus { outline:2px solid #3b82f6; outline-offset:2px; }
+  .card-toolbar button {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    padding: .65rem 1.05rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
+    border: none;
+  }
+  .card-toolbar button:hover { transform: translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,0.12); }
+  .card-toolbar button:active { transform: translateY(0); box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+  .btn-muted { background:#f1f5f9; color:#374151; }
+  .btn-muted:hover { background:#e2e8f0; }
+  .btn-primary { background:#2563eb; color:#fff; }
+  .btn-primary:hover { background:#1d4ed8; }
+  .btn-secondary { background:#475569; color:#fff; }
+  .btn-secondary:hover { background:#334155; }
+  .btn-accent { background:#059669; color:#fff; }
+  .btn-accent:hover { background:#047857; }
+  .btn-outline { background:#fff; color:#1f2937; border:1px solid #cbd5e1; }
+  .btn-outline:hover { background:#f8fafc; }
+  .card-toolbar .position-meta { font-size:.7rem; font-weight:500; color:#64748b; }
+  .card-toolbar .position-main { font-size:.75rem; font-weight:600; color:#334155; }
+  /* Student navigation bar */
+  .card-nav { display:flex; justify-content:space-between; align-items:center; gap:.75rem; margin-top:.75rem; background:#ffffff; border:1px solid #e2e8f0; padding:.6rem .9rem; border-radius:12px; box-shadow:0 2px 8px -2px rgba(17,24,39,.08); }
+  .card-nav button { font-size:.7rem; font-weight:600; padding:.55rem .9rem; border-radius:10px; border:none; display:inline-flex; align-items:center; gap:.4rem; background:#64748b; color:#fff; box-shadow:0 1px 2px rgba(0,0,0,.08); transition:.2s; }
+  .card-nav button:hover { background:#475569; transform:translateY(-2px); }
+  .card-nav button:disabled { background:#cbd5e1; color:#475569; cursor:not-allowed; transform:none; }
+  .card-nav .meta { font-size:.65rem; font-weight:500; color:#64748b; text-align:center; }
+  .card-nav .main { font-size:.75rem; font-weight:600; color:#334155; text-align:center; }
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm; /* modest margins */
+  }
+  body, .report-card-page {
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .report-card-page {
+    page-break-after: avoid;
+    page-break-before: avoid;
+  }
+  /* Ensure one page: shrink slightly if needed without altering coordinates */
+  .report-card-page {
+    transform-origin: top left;
+  }
+}
