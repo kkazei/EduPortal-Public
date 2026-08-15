@@ -1,12 +1,15 @@
-# EduPortal - School Management System
+# EduPortal - Student Records Management System
 
-## Overview
-EduPortal is a comprehensive school management system designed to streamline educational workflows. It brings together administration, teachers, students, and parents on a single platform to enhance communication and educational processes.
+A web-based student records management system built for **Tapinac Special Science Elementary School**, developed to replace manual academic record-keeping with a centralized digital platform.
+
+## About
+
+EduPortal was built to address the challenges of manual academic record management — particularly around student grades, attendance, report cards, certificates, and school announcements. It brings administrators, teachers, students, and parents/guardians onto a single platform with role-based access, cutting down on paperwork and making academic records easier to access and manage for everyone involved.
 
 ## Features
 
 ### For Administrators
-- User management (students, teacher)
+- User management (students, teachers)
 - Class and section management
 - Announcement creation and distribution
 - School-wide data monitoring and reporting
@@ -17,7 +20,7 @@ EduPortal is a comprehensive school management system designed to streamline edu
 - Generate and print student report cards
 - Create and manage class announcements
 
-### For Students
+### For Students / Parents & Guardians
 - View grades and report cards
 - Access class announcements
 - Track attendance records
@@ -31,19 +34,19 @@ EduPortal is a comprehensive school management system designed to streamline edu
 
 ## Technology Stack
 
-### Frontend
+**Frontend**
 - React with Vite
-- Tailwind CSS for styling
+- Tailwind CSS
 - Progressive Web App (PWA) capabilities
 
-### Backend
+**Backend**
 - Node.js
 - Express.js
 - RESTful API architecture
 - Web Push notifications
 
-### Database
-- SQL database for data storage and retrieval
+**Database**
+- SQL (via Sequelize ORM)
 
 ## Installation
 
@@ -53,53 +56,31 @@ EduPortal is a comprehensive school management system designed to streamline edu
 
 ### Backend Setup
 ```bash
-# Clone the repository
 git clone <repository-url>
-
-# Navigate to backend directory
 cd EduPortal/backend
-
-# Install dependencies
 npm install
-
-# Create .env file with required environment variables
+# Create a .env file with required environment variables
 # (Database connection, JWT secret, VAPID keys)
-
-# Start the server
 npm start
 ```
 
 ### Frontend Setup
 ```bash
-# Navigate to frontend directory
 cd ../frontend
-
-# Install dependencies
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-## Usage
-
-After setting up both frontend and backend, navigate to `http://localhost:5173` in your browser to access the application.
+### Usage
+After setting up both frontend and backend, navigate to `http://localhost:5173` in your browser.
 
 ## Logging Controls
-
 - `NODE_ENV=production`: Disables verbose logs by default (including Sequelize SQL output and most console logs).
 - `DB_LOG_QUERIES=true|false`: Force-enable or disable SQL query logging regardless of `NODE_ENV`.
 - In production, authentication debug logs are suppressed; in development they remain for easier debugging.
 
-
 ## License
-
 MIT License
 
-## Contributors
-
-- Jirro Aeron Guiao - Initial work and development
-
-
-
-
+## Author
+Jirro Aeron Guiao
