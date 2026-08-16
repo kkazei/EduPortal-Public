@@ -71,7 +71,7 @@ const ExcelImportModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          className="teacher-modal-overlay"
           onClick={(e) => {
             if (e.target === e.currentTarget && !importLoading) onClose();
           }}
@@ -80,20 +80,24 @@ const ExcelImportModal = ({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="bg-white rounded-xl shadow-lg p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto"
+            className="teacher-modal-panel sm:max-w-5xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Import Students from Excel</h2>
+            <div className="teacher-modal-header">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">Import Students from Excel</h2>
+                <p className="mt-1 text-sm text-gray-500">Upload, review, and import valid student records.</p>
+              </div>
               <button
                 onClick={() => !importLoading && onClose()}
-                className="text-gray-500 hover:text-gray-700 disabled:opacity-50"
+                className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
                 disabled={importLoading}
               >
                 <X className="h-6 w-6" />
               </button>
             </div>
-            
+
+            <div className="teacher-modal-body">
             {/* Class Selection for Admin */}
             {showClassSelection && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
@@ -310,7 +314,7 @@ const ExcelImportModal = ({
                 </div>
                 
                 {/* Statistics Cards */}
-                <div className="grid grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-2 gap-3 mb-4 sm:grid-cols-4">
                   <div className="bg-gray-50 p-3 rounded-lg text-center">
                     <p className="text-sm text-gray-600">Total</p>
                     <p className="text-xl font-bold text-gray-800">{importPreview.length}</p>
@@ -331,7 +335,7 @@ const ExcelImportModal = ({
                 
                 {/* Data Table */}
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto max-h-[400px]">
+                  <div className="max-h-[55vh] overflow-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50 sticky top-0">
                         <tr>
@@ -414,13 +418,15 @@ const ExcelImportModal = ({
                 </div>
               </div>
             )}
-            
+            </div>
+
             {/* Action Buttons */}
-            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+            <div className="teacher-modal-footer">
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto"
                 disabled={importLoading}
               >
                 Cancel
@@ -429,11 +435,11 @@ const ExcelImportModal = ({
               <button
                 type="button"
                 onClick={onImportSubmit}
-                className={`px-6 py-2 ${
+                className={`flex w-full items-center justify-center rounded-lg px-6 py-2.5 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto ${
                   importSuccess 
                     ? "bg-green-600 hover:bg-green-700" 
                     : "bg-blue-600 hover:bg-blue-700"
-                } text-white rounded-lg transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed`}
+                }`}
                 disabled={
                   importLoading || 
                   importSuccess || 
@@ -464,6 +470,7 @@ const ExcelImportModal = ({
                   </>
                 )}
               </button>
+            </div>
             </div>
           </motion.div>
         </motion.div>

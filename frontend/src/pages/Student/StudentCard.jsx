@@ -150,6 +150,12 @@ const StudentCard = () => {
     return isNaN(numericGrade) ? '' : (numericGrade >= 75 ? "Passed" : "Failed");
   };
 
+  const getGradeTone = (grade) => {
+    const numericGrade = parseFloat(grade);
+    if (isNaN(numericGrade)) return 'bg-slate-100 text-slate-500';
+    return numericGrade >= 75 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
+  };
+
   // Core values data with default empty ratings
   const coreValues = [
     {
@@ -223,19 +229,19 @@ const StudentCard = () => {
   const quarterlyAverages = computeQuarterlyAverages();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 print:p-0 print:bg-white">
+    <div className="min-h-screen bg-slate-50 px-4 py-4 sm:px-6 sm:py-6 print:p-0 print:bg-white">
       {/* Header Controls - Hidden when printing */}
       <div className="max-w-7xl mx-auto mb-6 print:hidden">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-lg shadow-sm p-4">
+        <div className="flex flex-col gap-4 rounded-3xl border border-blue-100 bg-white p-4 shadow-xl shadow-blue-900/5 sm:flex-row sm:items-center sm:justify-between">
           <button 
             onClick={handleBack} 
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+            className="inline-flex items-center text-sm font-semibold text-blue-600 transition-colors hover:text-blue-800"
           >
             <ChevronLeft size={20} />
-            <span>Back to Dashboard</span>
+            <span>Dashboard</span>
           </button>
           
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
             <select
               value={schoolYear}
               onChange={(e) => {
@@ -243,7 +249,7 @@ const StudentCard = () => {
                 setSchoolYear(val);
                 selectYear?.(val);
               }}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="h-11 rounded-2xl border border-blue-100 bg-blue-50 px-3 text-sm font-semibold text-blue-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
             >
               {(years && years.length > 0
                 ? years.map((y) => y.name)
@@ -260,7 +266,7 @@ const StudentCard = () => {
 
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
             >
               <Printer size={16} />
               Print
@@ -272,7 +278,7 @@ const StudentCard = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto space-y-6 print:space-y-4">
         {/* School Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg shadow-lg p-6 print:bg-blue-800 print:rounded-none">
+        <div className="bg-blue-700 text-white rounded-3xl shadow-lg shadow-blue-900/10 p-5 sm:p-6 print:bg-blue-800 print:rounded-none">
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2 mb-4">
               <GraduationCap size={32} />
@@ -286,8 +292,29 @@ const StudentCard = () => {
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-3 print:hidden lg:grid-cols-4">
+          <div className="rounded-3xl border border-blue-100 bg-white p-4 shadow-xl shadow-blue-900/5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">General Average</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900">{formatGrade(generalAverage) || '--'}</p>
+          </div>
+          <div className="rounded-3xl border border-blue-100 bg-white p-4 shadow-xl shadow-blue-900/5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">School Year</p>
+            <p className="mt-2 text-lg font-bold text-slate-900">{schoolYear}</p>
+          </div>
+          <div className="rounded-3xl border border-blue-100 bg-white p-4 shadow-xl shadow-blue-900/5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Class</p>
+            <p className="mt-2 text-lg font-bold text-slate-900">
+              {reportCard?.class?.grade_level || "-"} - {reportCard?.class?.section || "-"}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-blue-100 bg-white p-4 shadow-xl shadow-blue-900/5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Remarks</p>
+            <p className="mt-2 text-lg font-bold text-slate-900">{getRemarks(generalAverage) || 'Pending'}</p>
+          </div>
+        </div>
+
         {/* Student Information */}
-        <div className="bg-white rounded-lg shadow-sm p-6 print:shadow-none print:border print:border-gray-300">
+        <div className="bg-white rounded-3xl border border-blue-100 shadow-xl shadow-blue-900/5 p-5 sm:p-6 print:shadow-none print:border print:border-gray-300">
           <div className="flex items-center gap-3 mb-4">
             <User className="text-blue-600" size={24} />
             <h3 className="text-lg font-semibold text-gray-800">Student Information</h3>
@@ -296,29 +323,29 @@ const StudentCard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-500">LRN</label>
-              <p className="text-lg font-semibold text-gray-800">{student?.lrn || reportCard?.student?.lrn || "-"}</p>
+              <p className="break-words text-base font-semibold text-gray-800 sm:text-lg">{student?.lrn || reportCard?.student?.lrn || "-"}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">Full Name</label>
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="break-words text-base font-semibold text-gray-800 sm:text-lg">
                 {reportCard?.student?.last_name}, {reportCard?.student?.first_name} {reportCard?.student?.middle_name}
               </p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">Date of Birth</label>
-              <p className="text-lg font-semibold text-gray-800">{reportCard?.student?.birthdate || "-"}</p>
+              <p className="text-base font-semibold text-gray-800 sm:text-lg">{reportCard?.student?.birthdate || "-"}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">Age</label>
-              <p className="text-lg font-semibold text-gray-800">{reportCard?.student?.age || "-"}</p>
+              <p className="text-base font-semibold text-gray-800 sm:text-lg">{reportCard?.student?.age || "-"}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">Grade</label>
-              <p className="text-lg font-semibold text-gray-800">{reportCard?.class?.grade_level || "-"}</p>
+              <p className="text-base font-semibold text-gray-800 sm:text-lg">{reportCard?.class?.grade_level || "-"}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">Section</label>
-              <p className="text-lg font-semibold text-gray-800">{reportCard?.class?.section || "-"}</p>
+              <p className="text-base font-semibold text-gray-800 sm:text-lg">{reportCard?.class?.section || "-"}</p>
             </div>
           </div>
         </div>
@@ -326,14 +353,56 @@ const StudentCard = () => {
         {/* Combined Report Card */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 print:grid-cols-1">
           {/* Grades Section */}
-          <div className="bg-white rounded-lg shadow-sm p-6 print:shadow-none print:border print:border-gray-300">
+          <div className="bg-white rounded-3xl border border-blue-100 shadow-xl shadow-blue-900/5 p-4 sm:p-6 print:shadow-none print:border print:border-gray-300">
             <div className="flex items-center gap-3 mb-6">
               <FileText className="text-green-600" size={24} />
               <h3 className="text-lg font-semibold text-gray-800">Learning Progress and Achievement</h3>
             </div>
 
+            {/* Mobile Cards */}
+            <div className="space-y-3 md:hidden">
+              {subjectData.length > 0 ? (
+                subjectData.map((subject, index) => (
+                  <div key={index} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <h4 className="min-w-0 flex-1 text-sm font-bold text-slate-900">{subject.subject_name}</h4>
+                      <span className={`rounded-full px-3 py-1 text-sm font-bold ${getGradeTone(subject.final_grade)}`}>
+                        {formatGrade(subject.final_grade) || '--'}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-center">
+                      {['q1_grade', 'q2_grade', 'q3_grade', 'q4_grade'].map((quarter, quarterIndex) => (
+                        <div key={quarter} className="rounded-xl bg-white p-2">
+                          <p className="text-[10px] font-semibold uppercase text-slate-400">Q{quarterIndex + 1}</p>
+                          <p className="mt-1 text-sm font-bold text-slate-800">{formatGrade(subject[quarter]) || '-'}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-3 text-xs font-semibold text-slate-500">
+                      Remarks: <span className={subject.final_grade >= 75 ? 'text-emerald-700' : 'text-red-700'}>
+                        {subject.final_grade ? getRemarks(subject.final_grade) : 'Pending'}
+                      </span>
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-2xl bg-slate-50 p-8 text-center text-sm text-slate-500">
+                  No grades are available yet.
+                </div>
+              )}
+
+              {(generalAverage || quarterlyAverages.some(Boolean)) && (
+                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-slate-900">General Average</p>
+                    <span className="text-2xl font-bold text-blue-700">{formatGrade(generalAverage) || '--'}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Desktop Table */}
-            <div className="overflow-x-auto">
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b-2 border-gray-200">
@@ -390,7 +459,7 @@ const StudentCard = () => {
             </div>
 
             {/* Grading Scale */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg print:bg-gray-100">
+            <div className="mt-6 p-4 bg-slate-50 rounded-2xl print:bg-gray-100">
               <h4 className="font-semibold text-gray-800 mb-3">Grading Scale</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
                 <div className="flex justify-between">
@@ -414,7 +483,7 @@ const StudentCard = () => {
           </div>
 
           {/* Attendance Section */}
-          <div className="bg-white rounded-lg shadow-sm p-6 print:shadow-none print:border print:border-gray-300">
+          <div className="bg-white rounded-3xl border border-blue-100 shadow-xl shadow-blue-900/5 p-4 sm:p-6 print:shadow-none print:border print:border-gray-300">
             <div className="flex items-center gap-3 mb-6">
               <Calendar className="text-orange-600" size={24} />
               <h3 className="text-lg font-semibold text-gray-800">Report on Attendance</h3>
@@ -422,7 +491,7 @@ const StudentCard = () => {
 
             {/* Attendance Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-xs">
+              <table className="min-w-[640px] w-full text-xs">
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="text-left py-2 px-1 font-semibold text-gray-700">Month</th>

@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -115,6 +115,20 @@ export const initializeDb = async (syncOptions = {}) => {
 
     // Sync all models with the database (includes monthly school days now)
     await sequelize.sync(options);
+
+    try {
+      const queryInterface = sequelize.getQueryInterface();
+      const usersTable = await queryInterface.describeTable('users');
+      if (!usersTable.student_display_name) {
+        await queryInterface.addColumn('users', 'student_display_name', {
+          type: DataTypes.STRING(80),
+          allowNull: true,
+          defaultValue: null,
+        });
+      }
+    } catch (userSchemaError) {
+      console.error('âš ï¸ Failed to ensure user display-name schema:', userSchemaError.message);
+    }
     
     // Re-enable foreign key checks for MySQL only
     if (dialect === 'mysql') {

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Lock, Check, AlertCircle, Eye, EyeOff, Loader, Mail, RefreshCw, ShieldCheck, Verified } from 'lucide-react';
+import { X, Lock, Check, AlertCircle, Eye, EyeOff, Loader, Mail, RefreshCw, ShieldCheck, UserRound, Verified } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
 const AccountSettingsModal = ({ isOpen, onClose }) => {
@@ -14,9 +14,16 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { changePassword, initiateEmailChange, verifyEmailChange, resendEmailChangeCode, user, initiateVerifyAccount, resendVerifyAccount, confirmVerifyAccount } = useAuthStore();
+  const { changePassword, updateStudentDisplayName, initiateEmailChange, verifyEmailChange, resendEmailChangeCode, user, initiateVerifyAccount, resendVerifyAccount, confirmVerifyAccount } = useAuthStore();
 
+  const isStudentUser = user?.user_role === 'student';
   const isDefaultLrnEmail = user?.user_email ? /^\d{10,}@gmail\.com$/i.test(user.user_email) : false;
+
+  // Student display name state
+  const [displayName, setDisplayName] = useState('');
+  const [displayError, setDisplayError] = useState('');
+  const [displaySuccess, setDisplaySuccess] = useState('');
+  const [displaySubmitting, setDisplaySubmitting] = useState(false);
 
   // Email change state
   const [newEmail, setNewEmail] = useState('');
@@ -32,6 +39,15 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
   const [verifyError, setVerifyError] = useState('');
   const [verifySuccess, setVerifySuccess] = useState('');
   const [verifySubmitting, setVerifySubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && isStudentUser) {
+      setDisplayName(user?.student_display_name || '');
+      setDisplayError('');
+      setDisplaySuccess('');
+      setDisplaySubmitting(false);
+    }
+  }, [isOpen, isStudentUser, user?.student_display_name]);
   
   const resetForm = () => {
     setCurrentPassword('');
@@ -48,6 +64,10 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
     setEmailError('');
     setEmailSuccess('');
     setEmailSubmitting(false);
+    setDisplayName(user?.student_display_name || '');
+    setDisplayError('');
+    setDisplaySuccess('');
+    setDisplaySubmitting(false);
     // Reset verify state
     setVerifyStep(1);
     setVerifyCode('');
@@ -113,6 +133,31 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
       setError(err.response?.data?.message || 'Failed to change password. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDisplayNameSubmit = async (e) => {
+    e.preventDefault();
+    setDisplayError('');
+    setDisplaySuccess('');
+
+    const normalizedName = displayName.replace(/\s+/g, ' ').trim();
+
+    if (normalizedName.length > 80) {
+      setDisplayError('Display name must be 80 characters or fewer');
+      return;
+    }
+
+    setDisplaySubmitting(true);
+
+    try {
+      await updateStudentDisplayName(normalizedName);
+      setDisplayName(normalizedName);
+      setDisplaySuccess(normalizedName ? 'Display name updated successfully' : 'Display name cleared');
+    } catch (err) {
+      setDisplayError(err.message || 'Failed to update display name');
+    } finally {
+      setDisplaySubmitting(false);
     }
   };
 
@@ -228,7 +273,7 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          className="teacher-modal-overlay"
           onClick={handleClose}
         >
           <motion.div
@@ -236,20 +281,91 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', damping: 25 }}
-            className="bg-white rounded-xl shadow-xl w-full max-w-lg md:max-w-xl max-h-[90vh] overflow-y-auto"
+            className="teacher-modal-panel sm:max-w-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-bold text-gray-800">Account Settings</h2>
+            <div className="teacher-modal-header">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">Account Settings</h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  {isStudentUser ? 'Manage your display name, email, verification, and password.' : 'Manage your email, verification, and password.'}
+                </p>
+              </div>
               <button
                 onClick={handleClose}
-                className="text-gray-500 hover:text-gray-700 transition-colors"
+                className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="teacher-modal-body">
+              {isStudentUser && (
+                <div className="mb-8">
+                  <h3 className="font-semibold text-gray-800 mb-1 flex items-center">
+                    <UserRound className="h-5 w-5 mr-2 text-blue-600" />
+                    Student Display Name
+                  </h3>
+
+                  {displayError && (
+                    <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 rounded">
+                      <div className="flex">
+                        <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+                        <p className="text-sm text-red-700">{displayError}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {displaySuccess && (
+                    <div className="mb-4 p-3 bg-green-50 border-l-4 border-green-500 rounded">
+                      <div className="flex">
+                        <Check className="h-5 w-5 text-green-500 mr-2" />
+                        <p className="text-sm text-green-700">{displaySuccess}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleDisplayNameSubmit}>
+                    <label htmlFor="student-display-name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Display Name
+                    </label>
+                    <input
+                      id="student-display-name"
+                      type="text"
+                      maxLength={80}
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-3"
+                      placeholder={user?.user_fullname?.split(' ')[0] || 'Student'}
+                    />
+                    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setDisplayName('')}
+                        disabled={displaySubmitting}
+                        className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-70 sm:w-auto"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={displaySubmitting}
+                        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-white transition-colors hover:bg-blue-700 disabled:opacity-70 sm:w-auto"
+                      >
+                        {displaySubmitting ? (
+                          <div className="flex items-center justify-center">
+                            <Loader className="animate-spin h-4 w-4 mr-2" />
+                            Saving...
+                          </div>
+                        ) : (
+                          'Save Display Name'
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
               {/* Email Change */}
               <h3 className="font-semibold text-gray-800 mb-1 flex items-center">
                 <Mail className="h-5 w-5 mr-2 text-blue-600" />
@@ -548,18 +664,18 @@ const AccountSettingsModal = ({ isOpen, onClose }) => {
                   </div>
                 </div>
 
-                <div className="flex justify-end space-x-3">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-70"
+                    className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-white transition-colors hover:bg-blue-700 disabled:opacity-70 sm:w-auto"
                   >
                     {isSubmitting ? (
                       <div className="flex items-center">

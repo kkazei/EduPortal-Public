@@ -49,7 +49,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4 sm:p-6">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 sm:p-6">
       <div className="absolute top-6 left-6 flex items-center">
         <BookOpen className="h-8 w-8 text-blue-600" />
         <h1 className="text-2xl font-bold text-blue-800 ml-2">EduPortal</h1>

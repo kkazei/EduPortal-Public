@@ -503,8 +503,8 @@ const StudentReportCardPage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 sm:p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8 print:hidden">
+      {/* Header */}
+      <div className="bg-blue-700 text-white p-4 sm:p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8 print:hidden">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -718,7 +718,7 @@ const StudentReportCardPage = () => {
             <Award className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0" />
             <h2 className="text-lg sm:text-xl font-bold text-gray-800">Academic Performance</h2>
           </div>
-          <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-4 sm:mb-6 print:hidden"></div>
+          <div className="h-1 w-full bg-blue-500 rounded-full mb-4 sm:mb-6 print:hidden"></div>
           
           <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="min-w-full border-collapse">
@@ -858,7 +858,7 @@ const StudentReportCardPage = () => {
               <Calendar className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0" />
               <h2 className="text-lg sm:text-xl font-bold text-gray-800">Attendance Summary</h2>
             </div>
-            <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-4 sm:mb-6 print:hidden"></div>
+            <div className="h-1 w-full bg-blue-500 rounded-full mb-4 sm:mb-6 print:hidden"></div>
             
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <div className="bg-blue-50 p-3 sm:p-4 rounded-xl text-center border border-blue-100">
@@ -887,7 +887,7 @@ const StudentReportCardPage = () => {
             <FileEdit className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0" />
             <h2 className="text-lg sm:text-xl font-bold text-gray-800">Grading System</h2>
           </div>
-          <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-4 sm:mb-6 print:hidden"></div>
+          <div className="h-1 w-full bg-blue-500 rounded-full mb-4 sm:mb-6 print:hidden"></div>
           
           <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2 sm:gap-3">

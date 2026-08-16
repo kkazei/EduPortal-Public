@@ -180,7 +180,7 @@ const DashboardPage = () => {
     >
       {/* Unified Hero Section: Welcome + Recent Announcements */}
       <div className="mb-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-8 rounded-2xl shadow-lg relative overflow-hidden">
+        <div className="bg-blue-700 text-white px-6 py-8 rounded-2xl shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 opacity-10 pointer-events-none select-none">
             <svg width="260" height="260" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -443,7 +443,7 @@ const DashboardPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            className="teacher-modal-overlay"
             onClick={(e) => {
               if (e.target === e.currentTarget) closeModal();
             }}
@@ -452,20 +452,24 @@ const DashboardPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full"
+              className="teacher-modal-panel sm:max-w-md"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-800">Create New Class</h2>
+              <div className="teacher-modal-header">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">Create New Class</h2>
+                  <p className="mt-1 text-sm text-gray-500">Add a class for the active school year.</p>
+                </div>
                 <button 
                   onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-800 transition-colors"
+                  className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
               
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+                <div className="teacher-modal-body">
                 <div className="mb-4">
                   <label className="block text-gray-700 font-medium mb-2" htmlFor="grade_level">
                     Grade Level
@@ -510,17 +514,19 @@ const DashboardPage = () => {
                   </div>
                 </div>
                 
-                <div className="flex justify-end space-x-3">
+                </div>
+                <div className="teacher-modal-footer">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-700 transition-colors hover:bg-gray-100 sm:w-auto"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-white transition-colors hover:bg-blue-700 disabled:opacity-70 sm:w-auto"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -534,6 +540,7 @@ const DashboardPage = () => {
                       </>
                     )}
                   </button>
+                </div>
                 </div>
               </form>
             </motion.div>

@@ -646,8 +646,8 @@ const ClassStudentsPage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      {/* Header */}
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -1204,13 +1204,16 @@ const ClassStudentsPage = () => {
 
       {/* Promote Students Modal */}
       {isPromoteOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden">
-            <div className="px-5 py-4 border-b flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800">Promote Students</h3>
-              <button onClick={() => setIsPromoteOpen(false)} className="text-gray-500 hover:text-gray-700">✕</button>
+        <div className="teacher-modal-overlay">
+          <div className="teacher-modal-panel sm:max-w-3xl">
+            <div className="teacher-modal-header">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800">Promote Students</h3>
+                <p className="mt-1 text-sm text-gray-500">Move selected students into a target class.</p>
+              </div>
+              <button onClick={() => setIsPromoteOpen(false)} className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700">x</button>
             </div>
-            <div className="p-5 space-y-4">
+            <div className="teacher-modal-body space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700">Target School Year</label>
@@ -1256,7 +1259,7 @@ const ClassStudentsPage = () => {
                     {selectedIds.size === students.length ? 'Clear All' : 'Select All'}
                   </button>
                 </div>
-                <div className="max-h-64 overflow-auto border rounded-lg">
+                <div className="max-h-[50vh] overflow-auto rounded-lg border">
                   <table className="min-w-full text-sm">
                     <thead className="bg-gray-50 sticky top-0">
                       <tr>
@@ -1282,11 +1285,13 @@ const ClassStudentsPage = () => {
                 </div>
               </div>
             </div>
-            <div className="px-5 py-4 border-t flex items-center justify-end gap-2">
-              <button onClick={() => setIsPromoteOpen(false)} className="px-4 py-2 border rounded-lg text-gray-700">Cancel</button>
-              <button onClick={handleConfirmPromote} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg inline-flex items-center">
+            <div className="teacher-modal-footer">
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button onClick={() => setIsPromoteOpen(false)} className="w-full rounded-lg border px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto">Cancel</button>
+              <button onClick={handleConfirmPromote} className="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2.5 text-white transition-colors hover:bg-green-700 sm:w-auto">
                 <Send className="w-4 h-4 mr-2" /> Confirm Promotion
               </button>
+            </div>
             </div>
           </div>
         </div>

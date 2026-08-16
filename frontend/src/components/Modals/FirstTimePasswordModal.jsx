@@ -134,14 +134,14 @@ const FirstTimePasswordModal = ({ isOpen, userFullName, onVerifyLater }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="teacher-modal-overlay">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="teacher-modal-panel sm:max-w-md"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
+        <div className="bg-blue-700 p-6 text-white">
           <div className="flex items-center">
             <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
               <Lock className="w-6 h-6" />
@@ -154,7 +154,7 @@ const FirstTimePasswordModal = ({ isOpen, userFullName, onVerifyLater }) => {
         </div>
 
         {step === 1 ? (
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="teacher-modal-body space-y-4">
           {/* Welcome message */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-start">
@@ -352,7 +352,7 @@ const FirstTimePasswordModal = ({ isOpen, userFullName, onVerifyLater }) => {
           </div>
         </form>
         ) : (
-          <form onSubmit={handleVerify} className="p-6 space-y-4">
+          <form onSubmit={handleVerify} className="teacher-modal-body space-y-4">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <div className="flex items-start">
                 <ShieldCheck className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />

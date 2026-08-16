@@ -49,7 +49,7 @@ const AccountActivationPage = () => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4"
+        className="min-h-screen flex items-center justify-center bg-slate-50 px-4"
       >
         <div className="absolute top-6 left-6 flex items-center">
           <BookOpen className="h-8 w-8 text-blue-600" />
@@ -87,7 +87,7 @@ const AccountActivationPage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4"
+      className="min-h-screen flex items-center justify-center bg-slate-50 px-4"
     >
       <div className="absolute top-6 left-6 flex items-center">
         <BookOpen className="h-8 w-8 text-blue-600" />

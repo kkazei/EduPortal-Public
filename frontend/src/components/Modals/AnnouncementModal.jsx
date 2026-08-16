@@ -133,7 +133,7 @@ const AnnouncementModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          className="teacher-modal-overlay bg-slate-950/75"
           onClick={onClose}
         >
           <motion.div
@@ -141,18 +141,18 @@ const AnnouncementModal = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl my-4"
+            className="teacher-modal-panel sm:max-w-4xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 relative">
+            <div className="bg-blue-700 p-4 text-white sm:p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1 pr-4">
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="w-2 h-2 bg-blue-200 rounded-full animate-pulse"></div>
                     <span className="text-blue-100 text-sm font-medium">Active Announcement</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
+                  <h2 className="text-xl font-bold leading-tight sm:text-3xl">
                     {announcement.title}
                   </h2>
                 </div>
@@ -199,8 +199,8 @@ const AnnouncementModal = ({
             </div>
             
             {/* Content */}
-            <div className="overflow-y-auto max-h-[calc(95vh-200px)]">
-              <div className="p-6">
+            <div className="teacher-modal-body">
+              <div>
                 {/* Image Gallery */}
                 <ImageGallery 
                   images={announcement.images} 
@@ -216,8 +216,8 @@ const AnnouncementModal = ({
                 
                 {/* View Full Announcement */}
                 {announcement.id && (
-                  <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                    <div className="flex items-center justify-between">
+                  <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <h4 className="font-semibold text-gray-800 mb-1">View Full Announcement</h4>
                         <p className="text-gray-600 text-sm">Open in dedicated page view</p>
@@ -226,7 +226,7 @@ const AnnouncementModal = ({
                         href={`/announcement/${announcement.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
                       >
                         <ExternalLink className="h-4 w-4 mr-2" /> 
                         View Full
@@ -238,14 +238,14 @@ const AnnouncementModal = ({
             </div>
             
             {/* Footer with Navigation */}
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
-              <div className="flex justify-between items-center">
+            <div className="teacher-modal-footer">
+              <div className="flex items-center justify-between gap-3">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`flex items-center px-4 py-2 rounded-xl transition-all font-medium ${
                     hasPrevious 
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md hover:shadow-lg' 
+                      ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700 hover:shadow-lg' 
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                   onClick={(e) => {
@@ -274,7 +274,7 @@ const AnnouncementModal = ({
                   whileTap={{ scale: 0.95 }}
                   className={`flex items-center px-4 py-2 rounded-xl transition-all font-medium ${
                     hasNext 
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md hover:shadow-lg' 
+                      ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700 hover:shadow-lg' 
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                   onClick={(e) => {

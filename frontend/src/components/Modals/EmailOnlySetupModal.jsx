@@ -76,19 +76,19 @@ const EmailOnlySetupModal = ({ isOpen, onRemindLater }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[1000] flex items-center justify-center p-4">
+    <div className="teacher-modal-overlay z-[1000]">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="teacher-modal-panel sm:max-w-md"
       >
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-2xl">
+        <div className="bg-blue-700 p-6 text-white">
           <h2 className="text-xl font-bold">Add your email</h2>
           <p className="text-blue-100 text-sm">Your school requires an email to continue.</p>
         </div>
 
         {step === 1 ? (
-          <div className="p-6">
+          <div className="teacher-modal-body">
             {error && (
               <div className="mb-3 p-3 bg-red-50 border-l-4 border-red-500 rounded flex items-start">
                 <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
@@ -139,7 +139,7 @@ const EmailOnlySetupModal = ({ isOpen, onRemindLater }) => {
             <p className="text-xs text-center text-gray-600 mt-2">Can’t access email now? You can keep using your account and verify later.</p>
           </div>
         ) : (
-          <div className="p-6">
+          <div className="teacher-modal-body">
             {error && (
               <div className="mb-3 p-3 bg-red-50 border-l-4 border-red-500 rounded flex items-start">
                 <AlertCircle className="h-5 w-5 text-red-500 mr-2" />

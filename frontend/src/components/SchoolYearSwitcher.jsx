@@ -14,7 +14,8 @@ export default function SchoolYearSwitcher({ onChange, variant = 'default', clas
     if (onChange && selected) onChange(selected);
   }, [selected, onChange]);
 
-  const isInverted = variant === 'inverted';
+  const isCompact = variant === 'compact' || variant === 'compactInverted';
+  const isInverted = variant === 'inverted' || variant === 'compactInverted';
 
   return (
     <motion.div 
@@ -24,7 +25,7 @@ export default function SchoolYearSwitcher({ onChange, variant = 'default', clas
     >
       <div className="flex items-center gap-2">
         {/* Icon and Label */}
-        <div className={`flex items-center gap-2 ${isInverted ? 'text-white/90' : 'text-gray-700'}`}>
+        <div className={`${isCompact ? 'hidden' : 'flex'} items-center gap-2 ${isInverted ? 'text-white/90' : 'text-gray-700'}`}>
           <Calendar className={`w-4 h-4 ${isInverted ? 'text-white/70' : 'text-primary-600'}`} />
           <span className={`text-sm font-medium ${isInverted ? 'text-white/80' : 'text-gray-600'}`}>
             School Year
@@ -35,7 +36,8 @@ export default function SchoolYearSwitcher({ onChange, variant = 'default', clas
         <div className="relative">
           <select
             className={`
-              appearance-none cursor-pointer font-semibold text-sm pl-3 pr-8 py-2 rounded-xl
+              appearance-none cursor-pointer font-semibold
+              ${isCompact ? 'max-w-[46vw] rounded-lg py-1.5 pl-2 pr-7 text-xs' : 'rounded-xl py-2 pl-3 pr-8 text-sm'}
               transition-all duration-200
               ${isInverted 
                 ? 'bg-white/10 text-white border border-white/20 hover:bg-white/15 focus:bg-white/15 focus:border-white/40 backdrop-blur-sm shadow-lg' 

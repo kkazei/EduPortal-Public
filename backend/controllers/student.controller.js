@@ -691,6 +691,11 @@ export const getStudentByUserId = async (req, res) => {
       },
       include: [
         {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'user_fullname', 'user_email', 'student_display_name']
+        },
+        {
           model: Class,
           as: 'class',
           attributes: ['id', 'grade_level', 'section', 'school_year'],

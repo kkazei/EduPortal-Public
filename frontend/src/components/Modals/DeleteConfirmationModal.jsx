@@ -16,7 +16,7 @@ const DeleteConfirmationModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          className="teacher-modal-overlay"
           onClick={(e) => {
             if (e.target === e.currentTarget) onClose();
           }}
@@ -25,7 +25,7 @@ const DeleteConfirmationModal = ({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md"
+            className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center mb-4">
@@ -54,18 +54,18 @@ const DeleteConfirmationModal = ({
               </p>
             </div>
             
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:w-auto"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={onConfirm}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 sm:w-auto"
                 disabled={isLoading}
               >
                 {isLoading ? (

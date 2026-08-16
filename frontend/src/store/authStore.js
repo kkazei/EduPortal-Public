@@ -335,6 +335,33 @@ export const useAuthStore = create(
         }
       },
 
+      updateStudentDisplayName: async (displayName) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const response = await axios.patch(`${API_URL}/student-display-name`, {
+            display_name: displayName,
+          }, { withCredentials: true });
+
+          set((state) => ({
+            isLoading: false,
+            user: state.user ? { ...state.user, ...response.data.user } : response.data.user,
+          }));
+
+          toast.success(response.data.message || 'Display name updated successfully');
+          return response.data.user;
+        } catch (error) {
+          const message = error.response?.data?.message || 'Failed to update display name';
+          set({
+            isLoading: false,
+            error: message,
+          });
+
+          toast.error(message);
+          throw new Error(message);
+        }
+      },
+
       // First-time password update (only for students)
       updateFirstTimePassword: async (newPassword) => {
         set({ isLoading: true, error: null });

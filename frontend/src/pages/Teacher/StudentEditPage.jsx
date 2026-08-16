@@ -161,8 +161,8 @@ const StudentEditPage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      {/* Header */}
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -200,7 +200,7 @@ const StudentEditPage = () => {
                   <User className="h-5 w-5 text-blue-600 mr-2" />
                   <h2 className="text-xl font-bold text-gray-800">Personal Information</h2>
                 </div>
-                <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+                <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               </div>
 
               {/* LRN */}
@@ -426,7 +426,7 @@ const StudentEditPage = () => {
                   <Phone className="h-5 w-5 text-blue-600 mr-2" />
                   <h2 className="text-xl font-bold text-gray-800">Contact Information</h2>
                 </div>
-                <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+                <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               </div>
               
               {/* Contact Number */}

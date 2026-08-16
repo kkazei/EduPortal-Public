@@ -1,20 +1,18 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useMemo, useState, useEffect, lazy, Suspense } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Bell } from 'lucide-react';
+import { ArrowRight, Award, Bell, BookOpen, Calendar, FileText, UserCheck, UserCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../store/authStore';
 import { useAnnouncementStore } from '../../store/announcementStore';
 import { useStudentStore } from '../../store/studentStore';
-import NotificationToggle from '../../components/NotificationToggle'; // Static import
+import AnnouncementsList from '../../components/Student/AnnouncementList';
+import { useSchoolYearStore } from '../../store/schoolYearStore';
+import { useGradeStore } from '../../store/gradeStore';
+import { getStudentGreetingName } from '../../utils/studentDisplayName';
 
-// Lazy load other components
-const StudentHeader = lazy(() => import('../../components/Student/StudentHeader'));
-const StudentMobileMenu = lazy(() => import('../../components/Student/StudentMobileMenu'));
-const StudentProfileCard = lazy(() => import('../../components/Student/StudentProfileCard'));
-const AnnouncementsList = lazy(() => import('../../components/Student/AnnouncementList'));
+// Lazy load modal-only components
 const AnnouncementModal = lazy(() => import('../../components/Modals/AnnouncementModal'));
-const AccountSettingsModal = lazy(() => import('../../components/Modals/AccountSettingsModal'));
 const FirstTimePasswordModal = lazy(() => import('../../components/Modals/FirstTimePasswordModal'));
 const EmailOnlySetupModal = lazy(() => import('../../components/Modals/EmailOnlySetupModal'));
 
@@ -23,37 +21,22 @@ const EMAIL_ONLY_SNOOZE_KEY = 'emailOnlyVerifySnoozeUntil';
 const getSnoozeKey = (userId) => `${FIRST_TIME_SNOOZE_KEY}:${userId || 'unknown'}`;
 const getEmailOnlySnoozeKey = (userId) => `${EMAIL_ONLY_SNOOZE_KEY}:${userId || 'unknown'}`;
 
-// Loading component
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center py-8">
-    <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-  </div>
-);
-
 const StudentDashboard = () => {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
   const { announcements, fetchAdviserAnnouncements } = useAnnouncementStore();
   const { currentStudent, fetchStudentByUserId, isLoading: loadingStudent } = useStudentStore();
+  const selectedYear = useSchoolYearStore((s) => s.selected);
+  const fetchYears = useSchoolYearStore((s) => s.fetchYears);
+  const { getStudentCard } = useGradeStore();
   const navigate = useNavigate();
 
   // State management
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAnnouncementIndex, setSelectedAnnouncementIndex] = useState(0);
-  const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [firstTimePasswordModalOpen, setFirstTimePasswordModalOpen] = useState(false);
   const [emailOnlySetupOpen, setEmailOnlySetupOpen] = useState(false);
-
-  // Navigation functions
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-  const openAccountSettings = () => {
-    setAccountSettingsOpen(true);
-    setMobileMenuOpen(false);
-  };
-  const goToReportCard = () => {
-    navigate('/student-report-card');
-    setMobileMenuOpen(false);
-  };
+  const [reportSummary, setReportSummary] = useState(null);
+  const [reportSummaryLoading, setReportSummaryLoading] = useState(false);
 
   // Handle View All Announcements
   const handleViewAllAnnouncements = () => {
@@ -61,14 +44,28 @@ const StudentDashboard = () => {
     navigate('/student/announcements');
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/student-login', { replace: true });
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+  useEffect(() => {
+    fetchYears?.();
+  }, [fetchYears]);
+
+  useEffect(() => {
+    const loadReportSummary = async () => {
+      if (!currentStudent?.id) return;
+
+      setReportSummaryLoading(true);
+      try {
+        const data = await getStudentCard(currentStudent.id, selectedYear || null);
+        setReportSummary(data);
+      } catch (error) {
+        console.error('Failed to load dashboard report summary:', error);
+        setReportSummary(null);
+      } finally {
+        setReportSummaryLoading(false);
+      }
+    };
+
+    loadReportSummary();
+  }, [currentStudent?.id, getStudentCard, selectedYear]);
 
   const handleVerifyLater = () => {
     try {
@@ -215,80 +212,186 @@ const StudentDashboard = () => {
   }, [currentStudent, fetchAdviserAnnouncements]);
 
   const activeAnnouncements = announcements.filter(announcement => announcement.is_active);
+  const greetingName = getStudentGreetingName({ currentStudent, user });
+  const subjects = reportSummary?.subjects || [];
+  const finalAverage = reportSummary?.quarterlyAverages?.final_average
+    || (() => {
+      const gradedSubjects = subjects.filter((subject) => Number.isFinite(parseFloat(subject.final_grade)));
+      if (gradedSubjects.length === 0) return null;
+      const total = gradedSubjects.reduce((sum, subject) => sum + parseFloat(subject.final_grade), 0);
+      return total / gradedSubjects.length;
+    })();
+  const gradedSubjectsCount = useMemo(
+    () => subjects.filter((subject) => Number.isFinite(parseFloat(subject.final_grade))).length,
+    [subjects]
+  );
+  const formatGrade = (grade) => {
+    const numericGrade = parseFloat(grade);
+    return Number.isFinite(numericGrade) ? Math.round(numericGrade).toString() : '--';
+  };
+  const dashboardStats = [
+    {
+      label: 'School Year',
+      value: selectedYear || currentStudent?.school_year || 'Not set',
+      icon: Calendar
+    },
+    {
+      label: 'Class',
+      value: currentStudent?.class
+        ? `${currentStudent.class.grade_level} - ${currentStudent.class.section}`
+        : 'Not assigned',
+      icon: BookOpen
+    },
+    {
+      label: 'Class Adviser',
+      value: currentStudent?.class?.adviser?.user_fullname || 'Not assigned',
+      icon: UserCheck
+    },
+    {
+      label: 'Announcements',
+      value: `${activeAnnouncements.length} active`,
+      icon: Bell
+    }
+  ];
 
   return (
-    <motion.div 
+    <motion.main 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen bg-gray-50"
+      className="min-h-screen bg-slate-50"
     >
-      <div className="max-w-7xl mx-auto p-4 lg:p-8">
-        <Suspense fallback={<LoadingSpinner />}>
-          <StudentHeader
-            currentStudent={currentStudent}
-            user={user}
-            mobileMenuOpen={mobileMenuOpen}
-            toggleMobileMenu={toggleMobileMenu}
-            goToReportCard={goToReportCard}
-            openAccountSettings={openAccountSettings}
-            handleLogout={handleLogout}
-          />
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+        <section className="mb-5 rounded-3xl border border-blue-100 bg-white p-5 shadow-xl shadow-blue-900/5 sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">Student Dashboard</p>
+              <h1 className="mt-2 text-3xl font-bold text-slate-900">
+                Welcome, {greetingName}
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
+                Here are the essentials for your class today.
+              </p>
+            </div>
 
-          <StudentMobileMenu
-            isOpen={mobileMenuOpen}
-            onClose={() => setMobileMenuOpen(false)}
-            currentStudent={currentStudent}
-            user={user}
-            goToReportCard={goToReportCard}
-            openAccountSettings={openAccountSettings}
-            handleLogout={handleLogout}
-          />
-        </Suspense>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => navigate('/student-profile')}
+                className="inline-flex h-11 items-center justify-center rounded-2xl border border-blue-100 bg-blue-50 px-4 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+              >
+                Profile
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/student-report-card')}
+                className="inline-flex h-11 items-center justify-center rounded-2xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
+              >
+                Report Card
+              </button>
+            </div>
+          </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Card */}
-          <div className="lg:col-span-1">
-            <Suspense fallback={<LoadingSpinner />}>
-              <StudentProfileCard
-                currentStudent={currentStudent}
-                loadingStudent={loadingStudent}
-                openAccountSettings={openAccountSettings}
-                goToReportCard={goToReportCard}
-                handleLogout={handleLogout}
-                // Pass the NotificationToggle as a prop
-                extraQuickAction={
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all group"
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {dashboardStats.map(({ label, value, icon: Icon }) => (
+              <div key={label} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+                <p className="mt-1 truncate text-base font-bold text-slate-900">{value}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className="grid gap-5 xl:grid-cols-12">
+          <div className="xl:col-span-8">
+            <AnnouncementsList
+              announcements={activeAnnouncements}
+              onAnnouncementClick={openAnnouncementModal}
+              onViewAll={handleViewAllAnnouncements}
+              isLoading={loadingStudent}
+            />
+          </div>
+
+          <aside className="grid gap-5 xl:col-span-4">
+            <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-xl shadow-blue-900/5">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-blue-600">Report Card</p>
+                  <h2 className="mt-1 text-xl font-bold text-slate-900">Progress Summary</h2>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+                  <Award className="h-5 w-5" />
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">General Average</p>
+                <div className="mt-2 flex items-end justify-between gap-3">
+                  <p className="text-4xl font-bold text-slate-900">
+                    {reportSummaryLoading ? '--' : formatGrade(finalAverage)}
+                  </p>
+                  <p className="pb-1 text-sm font-semibold text-slate-500">
+                    {gradedSubjectsCount}/{subjects.length || 0} subjects
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                {subjects.slice(0, 3).map((subject) => (
+                  <div key={subject.subject_id || subject.subject_name} className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2">
+                    <p className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-700">{subject.subject_name}</p>
+                    <span className="ml-3 rounded-full bg-white px-3 py-1 text-sm font-bold text-blue-700">
+                      {formatGrade(subject.final_grade)}
+                    </span>
+                  </div>
+                ))}
+                {!reportSummaryLoading && subjects.length === 0 && (
+                  <div className="rounded-2xl bg-slate-50 px-3 py-6 text-center text-sm text-slate-500">
+                    Grades are not available yet.
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => navigate('/student-report-card')}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+              >
+                Report Card
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </section>
+
+            <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-xl shadow-blue-900/5">
+              <h2 className="text-xl font-bold text-slate-900">Pages</h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+                {[
+                  { label: 'Profile', path: '/student-profile', icon: UserCircle },
+                  { label: 'Report Card', path: '/student-report-card', icon: FileText },
+                  { label: 'Announcements', path: '/student/announcements', icon: Bell }
+                ].map(({ label, path, icon: Icon }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => navigate(path)}
+                    className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-3 text-left transition hover:border-blue-100 hover:bg-blue-50"
                   >
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                        <Bell className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="font-medium text-gray-700">Enable Notifications</span>
-                    </div>
-                    <NotificationToggle variant="student" />
-                  </motion.div>
-                }
-              />
-            </Suspense>
-          </div>
-
-          {/* Announcements */}
-          <div className="lg:col-span-2">
-            <Suspense fallback={<LoadingSpinner />}>
-              <AnnouncementsList
-                announcements={activeAnnouncements}
-                onAnnouncementClick={openAnnouncementModal}
-                onViewAll={handleViewAllAnnouncements}
-                isLoading={loadingStudent}
-              />
-            </Suspense>
-          </div>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="truncate text-sm font-bold text-slate-800">{label}</span>
+                    </span>
+                    <ArrowRight className="h-4 w-4 flex-shrink-0 text-slate-400" />
+                  </button>
+                ))}
+              </div>
+            </section>
+          </aside>
         </div>
 
         {/* Modals */}
@@ -314,13 +417,9 @@ const StudentDashboard = () => {
             hasPrevious={selectedAnnouncementIndex > 0}
           />
 
-          <AccountSettingsModal 
-            isOpen={accountSettingsOpen}
-            onClose={() => setAccountSettingsOpen(false)}
-          />
         </Suspense>
       </div>
-    </motion.div>
+    </motion.main>
   );
 };
 

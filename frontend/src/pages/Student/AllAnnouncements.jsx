@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Bell, Calendar, Eye, Search, Loader } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAnnouncementStore } from '../../store/announcementStore';
@@ -9,6 +9,7 @@ import { useAuthStore } from '../../store/authStore';
 
 const AllAnnouncements = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const { currentStudent, fetchStudentByUserId } = useStudentStore();
   const { 
@@ -18,6 +19,13 @@ const AllAnnouncements = () => {
   } = useAnnouncementStore();
 
   const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    if (searchParams.get('focus') === 'search') {
+      searchInputRef.current?.focus();
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const loadStudentAndAnnouncements = async () => {
@@ -64,7 +72,7 @@ const AllAnnouncements = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <motion.div
@@ -83,10 +91,10 @@ const AllAnnouncements = () => {
               className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all mr-0 sm:mr-4 text-sm sm:text-base w-fit"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              Dashboard
             </motion.button>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 flex items-center">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-3 shadow-md">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-md">
                 <Bell className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
               </div>
               Class Announcements
@@ -115,6 +123,7 @@ const AllAnnouncements = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search class announcements..."
               value={searchTerm}
@@ -179,10 +188,10 @@ const AllAnnouncements = () => {
                           e.stopPropagation(); // Prevent card click
                           handleAnnouncementClick(announcement);
                         }}
-                        className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all text-xs sm:text-sm font-medium shadow-md hover:shadow-lg"
+                        className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all text-xs sm:text-sm font-medium shadow-md hover:shadow-lg"
                       >
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                        Read More
+                        Announcement
                       </motion.button>
                     </div>
                   </div>

@@ -33,6 +33,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  student_display_name: {
+    type: DataTypes.STRING(80),
+    allowNull: true,
+    defaultValue: null,
+    validate: {
+      len: [0, 80],
+    },
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -115,6 +123,10 @@ const User = sequelize.define('User', {
       if (user.user_role !== 'teacher') {
         user.teacher_title = null;
       }
+
+      if (user.user_role !== 'student') {
+        user.student_display_name = null;
+      }
       
       // Set is_first_login based on user role
       if (user.user_role === 'student') {
@@ -127,6 +139,10 @@ const User = sequelize.define('User', {
       // Clear teacher title for non-teachers
       if (user.user_role !== 'teacher') {
         user.teacher_title = null;
+      }
+
+      if (user.user_role !== 'student') {
+        user.student_display_name = null;
       }
       
       // Business logic: only students should have is_first_login as true

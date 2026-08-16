@@ -8,6 +8,7 @@ import {
   adminLogin,
   superadminLogin,
   changePassword, // Import the changePassword function
+  updateStudentDisplayName,
   updateFirstTimePassword, // Import the new function
   initiateFirstTimeSetup,
   resendFirstTimeEmailCode,
@@ -47,6 +48,8 @@ router.get("/check-auth", verifyToken, checkAuth);
 
 // Add the route for changing password - protected by verifyToken middleware
 router.post("/change-password", verifyToken, changePassword);
+
+router.patch("/student-display-name", verifyToken, updateStudentDisplayName);
 
 // Add the route for first-time password update - protected by verifyToken middleware
 router.post("/update-first-time-password", verifyToken, updateFirstTimePassword);

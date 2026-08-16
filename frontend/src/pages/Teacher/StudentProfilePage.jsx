@@ -317,8 +317,8 @@ const StudentProfilePage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative mb-8">
+      {/* Header */}
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -471,7 +471,7 @@ const StudentProfilePage = () => {
                 <User className="h-5 w-5 text-blue-600 mr-2" />
                 <h2 className="text-xl font-bold text-gray-800">Personal Information</h2>
               </div>
-              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+              <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-gray-50 p-4 rounded-lg">
@@ -513,7 +513,7 @@ const StudentProfilePage = () => {
                 <Phone className="h-5 w-5 text-blue-600 mr-2" />
                 <h2 className="text-xl font-bold text-gray-800">Contact Information</h2>
               </div>
-              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+              <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-50 p-4 rounded-lg flex items-start">
@@ -585,7 +585,7 @@ const StudentProfilePage = () => {
                 </Link>
                 </div>
               </div>
-              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+              <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               
               {/* Class Information */}
               <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -766,7 +766,7 @@ const StudentProfilePage = () => {
                   </select>
                 </div>
               </div>
-              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-blue-300 rounded-full mb-6"></div>
+              <div className="h-1 w-full bg-blue-500 rounded-full mb-6"></div>
               
               {currentStudent.attendance && currentStudent.attendance.length > 0 ? (
                 <>
@@ -922,13 +922,13 @@ const StudentProfilePage = () => {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          className="teacher-modal-overlay"
         >
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
+            className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md"
           >
             <div className="text-center mb-4">
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
@@ -939,12 +939,12 @@ const StudentProfilePage = () => {
                 Are you sure you want to delete this student? This action cannot be undone.
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto"
               >
                 <X className="h-5 w-5 mr-2 inline" />
                 Cancel
@@ -953,7 +953,7 @@ const StudentProfilePage = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleDelete}
-                className="px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex-shrink-0"
+                className="w-full flex-shrink-0 rounded-lg bg-red-600 px-4 py-3 text-white transition-colors hover:bg-red-700 sm:w-auto"
               >
                 <Trash2 className="h-5 w-5 mr-2 inline" />
                 Delete Student

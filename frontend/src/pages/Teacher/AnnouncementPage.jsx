@@ -290,7 +290,7 @@ const AnnouncementPage = () => {
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
       {/* Header section with page title and create button */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -449,10 +449,6 @@ const AnnouncementPage = () => {
                   {announcement.content}
                 </p>
                 
-                {/* Gradient fade effect when collapsed */}
-                {!expandedAnnouncements[announcement.id] && (
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent"></div>
-                )}
               </div>
               
               {/* Show more/less button */}
@@ -667,12 +663,12 @@ const AnnouncementPage = () => {
       
       {viewerOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-3 sm:p-6"
           onClick={closeImageViewer}
         >
-          <div className="relative max-w-4xl max-h-full">
+          <div className="relative max-h-full w-full max-w-5xl">
             <button 
-              className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-lg"
+              className="absolute right-3 top-3 rounded-full bg-white p-2 shadow-lg sm:right-4 sm:top-4"
               onClick={closeImageViewer}
             >
               <X className="h-6 w-6 text-gray-800" />
@@ -680,7 +676,7 @@ const AnnouncementPage = () => {
             <img 
               src={viewerImage} 
               alt="Full size" 
-              className="max-w-full max-h-[90vh] object-contain"
+              className="mx-auto max-h-[94dvh] max-w-full object-contain"
               onClick={(e) => e.stopPropagation()}
             />
           </div>

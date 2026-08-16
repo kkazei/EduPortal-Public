@@ -59,6 +59,7 @@ export const login = async (req, res) => {
                 id: user.id,
                 user_email: user.user_email,
                 user_fullname: user.user_fullname,
+                student_display_name: user.student_display_name,
                 user_role: user.user_role,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt
@@ -127,6 +128,7 @@ export const studentLogin = async (req, res) => {
         id: user.id,
         user_email: user.user_email,
         user_fullname: user.user_fullname,
+        student_display_name: user.student_display_name,
         user_role: user.user_role,
         is_first_login: user.is_first_login || false, // Include first login status
         createdAt: user.createdAt,
@@ -285,6 +287,7 @@ export const checkAuth = async (req, res) => {
           id: user.id,
           user_email: user.user_email,
           user_fullname: user.user_fullname,
+          student_display_name: user.student_display_name,
           user_role: user.user_role,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt
@@ -377,6 +380,71 @@ export const changePassword = async (req, res) => {
       success: false,
       message: "Error changing password",
       error: error.message
+    });
+  }
+};
+
+export const updateStudentDisplayName = async (req, res) => {
+  try {
+    const { display_name } = req.body;
+    const user = await User.findByPk(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.user_role !== 'student') {
+      return res.status(403).json({
+        success: false,
+        message: 'Display name changes are only available for student accounts'
+      });
+    }
+
+    if (display_name !== undefined && display_name !== null && typeof display_name !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Display name must be text'
+      });
+    }
+
+    const normalizedDisplayName = (display_name || '').replace(/\s+/g, ' ').trim();
+
+    if (normalizedDisplayName.length > 80) {
+      return res.status(400).json({
+        success: false,
+        message: 'Display name must be 80 characters or fewer'
+      });
+    }
+
+    await user.update({
+      student_display_name: normalizedDisplayName || null,
+      updatedAt: new Date()
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: normalizedDisplayName ? 'Display name updated successfully' : 'Display name cleared',
+      user: {
+        id: user.id,
+        user_email: user.user_email,
+        user_fullname: user.user_fullname,
+        student_display_name: user.student_display_name,
+        user_role: user.user_role,
+        is_first_login: user.is_first_login || false,
+        is_email_verified: user.is_email_verified,
+        resetPasswordToken: user.resetPasswordToken,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    });
+  } catch (error) {
+    console.error('Student display name update error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update display name'
     });
   }
 };
@@ -985,6 +1053,7 @@ export const superadminLogin = async (req, res) => {
         id: user.id,
         user_email: user.user_email,
         user_fullname: user.user_fullname,
+        student_display_name: user.student_display_name,
         user_role: user.user_role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
@@ -1005,6 +1074,7 @@ export default {
     logout,
     checkAuth,
     changePassword,
+    updateStudentDisplayName,
     updateFirstTimePassword, // Add the new function to exports
     forgotPassword,
     resetPassword,

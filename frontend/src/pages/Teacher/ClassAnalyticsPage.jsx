@@ -1542,7 +1542,7 @@ const ClassAnalyticsPage = () => {
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <BarChart3 size={200} />
         </div>
@@ -2609,13 +2609,13 @@ const ClassAnalyticsPage = () => {
       )}
       {/* Honor Students Modal */}
       {showHonorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="teacher-modal-overlay">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0"
             onClick={() => setShowHonorModal(false)}
           />
-          <div className="relative bg-white rounded-xl w-full max-w-2xl shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b">
+          <div className="teacher-modal-panel sm:max-w-2xl">
+            <div className="teacher-modal-header">
               <div>
                 <h4 className="text-lg font-semibold">Honor Students{honorFilter ? ` — ${honorFilter}` : ''}</h4>
                 <p className="text-sm text-gray-500">Q{selectedQuarter} • SY {selectedSchoolYear}</p>
@@ -2627,7 +2627,7 @@ const ClassAnalyticsPage = () => {
                 Close
               </button>
             </div>
-            <div className="max-h-[65vh] overflow-y-auto">
+            <div className="teacher-modal-body p-0">
               <ul className="divide-y">
                 {(honorFilter ? honorStudents.filter(s => getDistinctionForAvg(parseFloat(s.average || 0)) === honorFilter) : honorStudents)
                   .slice()
@@ -2666,10 +2666,10 @@ const ClassAnalyticsPage = () => {
       )}
       {/* Grade Bucket Modal */}
       {rangeModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setRangeModal({ open: false, range: null })} />
-          <div className="relative bg-white rounded-xl w-full max-w-2xl shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b">
+        <div className="teacher-modal-overlay">
+          <div className="absolute inset-0" onClick={() => setRangeModal({ open: false, range: null })} />
+          <div className="teacher-modal-panel sm:max-w-2xl">
+            <div className="teacher-modal-header">
               <div>
                 <h4 className="text-lg font-semibold">Students with average ≈ {rangeModal.range}</h4>
                 <p className="text-sm text-gray-500">
@@ -2683,7 +2683,7 @@ const ClassAnalyticsPage = () => {
                 Close
               </button>
             </div>
-            <div className="max-h-[65vh] overflow-y-auto">
+            <div className="teacher-modal-body p-0">
               <ul className="divide-y">
                 {getStudentsByGradeBucket(rangeModal.range)
                   .slice()
@@ -2726,14 +2726,14 @@ const ClassAnalyticsPage = () => {
 
       {/* Grade Range Detail Modal */}
       {gradeRangeModal.open && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="teacher-modal-overlay">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+            className="teacher-modal-panel sm:max-w-2xl"
           >
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+            <div className="bg-blue-700 text-white p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-bold">{gradeRangeModal.subject}</h3>
@@ -2752,7 +2752,7 @@ const ClassAnalyticsPage = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 max-h-[60vh] overflow-y-auto">
+            <div className="teacher-modal-body">
               {gradeRangeModal.students.length > 0 ? (
                 <div className="space-y-3">
                   {gradeRangeModal.students
@@ -2783,7 +2783,7 @@ const ClassAnalyticsPage = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="bg-gray-50 px-6 py-4 flex justify-end">
+            <div className="teacher-modal-footer flex justify-end">
               <button
                 onClick={() => setGradeRangeModal({ open: false, subject: '', range: '', students: [] })}
                 className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"

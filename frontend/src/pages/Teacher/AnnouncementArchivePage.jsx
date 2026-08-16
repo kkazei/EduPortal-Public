@@ -264,8 +264,8 @@ const AnnouncementArchivePage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      {/* Header */}
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -597,14 +597,14 @@ const AnnouncementArchivePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            className="teacher-modal-overlay"
             onClick={() => setShowConfirmDialog(false)}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full"
+              className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center mb-4">
@@ -621,16 +621,16 @@ const AnnouncementArchivePage = () => {
                 }
               </p>
               
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button
                   onClick={() => setShowConfirmDialog(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleBatchOperation(confirmAction)}
-                  className={`px-4 py-2 rounded-lg text-white transition-colors ${
+                  className={`w-full rounded-lg px-4 py-2.5 text-white transition-colors sm:w-auto ${
                     confirmAction === 'delete' 
                       ? 'bg-red-600 hover:bg-red-700' 
                       : 'bg-green-600 hover:bg-green-700'

@@ -40,22 +40,27 @@ const AnnouncementFormModal = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4"
+      className="teacher-modal-overlay"
+      onClick={() => !isSubmitting && onClose()}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden"
+        className="teacher-modal-panel sm:max-w-lg"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl font-bold text-gray-800">
-            {isEditing ? 'Edit Announcement' : 'Create Announcement'}
-          </h2>
+        <div className="teacher-modal-header">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">
+              {isEditing ? 'Edit Announcement' : 'Create Announcement'}
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">Post updates with optional image attachments.</p>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100"
+            className="rounded-full p-2 hover:bg-gray-100"
             disabled={isSubmitting}
           >
             <X className="h-5 w-5 text-gray-500" />
@@ -63,7 +68,7 @@ const AnnouncementFormModal = ({
         </div>
         
         {/* Modal Body - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="teacher-modal-body">
           <form id="announcement-modal-form" onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-700 font-medium mb-2" htmlFor="title-modal">
@@ -152,12 +157,12 @@ const AnnouncementFormModal = ({
         </div>
         
         {/* Modal Footer - Fixed at bottom */}
-        <div className="border-t p-4 bg-gray-50">
-          <div className="flex gap-3">
+        <div className="teacher-modal-footer">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors"
+              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-100"
               disabled={isSubmitting}
             >
               Cancel

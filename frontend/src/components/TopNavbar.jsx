@@ -3,12 +3,8 @@ import { useAuthStore } from "../store/authStore";
 import { 
   Home, 
   Bell, 
-  Users,
   LogOut, 
-  BookOpen,
   Archive,
-  Menu,
-  X,
   UserCog,
   ChevronDown,
   GraduationCap,
@@ -21,7 +17,6 @@ import SchoolYearSwitcher from './SchoolYearSwitcher';
 const SideNavbar = ({ isMaximized, setIsMaximized }) => {
   const { logout, user } = useAuthStore();
   const location = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +30,6 @@ const SideNavbar = ({ isMaximized, setIsMaximized }) => {
   // Only show announcement archive for teachers
   const canViewTeacherFeatures = normalizedRole === 'teacher';
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
 
   // Handle scroll effect
@@ -62,21 +56,31 @@ const SideNavbar = ({ isMaximized, setIsMaximized }) => {
     <>
       <div className="fixed top-0 left-0 right-0 z-40 print:hidden">
         {/* Main navbar with glass effect */}
-        <div className={`transition-all duration-300 ${
+          <div className={`transition-all duration-300 ${
           scrolled 
             ? 'bg-primary-700/95 backdrop-blur-xl shadow-xl border-b border-primary-600/20' 
-            : 'bg-gradient-to-r from-primary-600 via-primary-700 to-blue-800'
+            : 'bg-primary-700 shadow-lg border-b border-primary-600/30'
         } text-white`}>
-          <div className="container mx-auto px-4 lg:px-6">
+          <div className="container mx-auto px-3 lg:px-6">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
-              <Link to="/dashboard" className="flex items-center group">
+              <Link to="/dashboard" className="flex min-w-0 items-center group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-white/20 rounded-xl blur group-hover:bg-white/30 transition-all"></div>
-                  <GraduationCap className="h-9 w-9 text-white relative z-10 group-hover:scale-110 transition-transform" />
+                  <GraduationCap className="relative z-10 h-8 w-8 text-white transition-transform group-hover:scale-110 md:h-9 md:w-9" />
+                </div>
+                <div className="ml-2 flex min-w-0 items-center gap-1.5 md:hidden">
+                  <h2 className="truncate text-lg font-display font-bold text-white">
+                    EduPortal
+                  </h2>
+                  {roleLabel && (
+                    <span className="rounded-full border border-white/30 bg-white/20 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      {roleLabel}
+                    </span>
+                  )}
                 </div>
                 <div className="ml-3 hidden md:flex items-center gap-2">
-                  <h2 className="text-2xl font-display font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                  <h2 className="text-2xl font-display font-bold text-white">
                     EduPortal
                   </h2>
                   {roleLabel && (
@@ -121,6 +125,8 @@ const SideNavbar = ({ isMaximized, setIsMaximized }) => {
                   />
                 )}
               </nav>
+
+              <SchoolYearSwitcher variant="compactInverted" className="ml-2 shrink-0 md:hidden" />
               
               {/* School year switcher + user menu */}
               <div className="hidden md:flex items-center gap-3" ref={dropdownRef}>
@@ -132,7 +138,7 @@ const SideNavbar = ({ isMaximized, setIsMaximized }) => {
                     onClick={toggleUserMenu}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-white/20"
                   >
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-sm">
                       {(user?.user_fullname || 'U').charAt(0).toUpperCase()}
                     </div>
                     <span className="text-sm font-medium hidden lg:block">
@@ -179,104 +185,9 @@ const SideNavbar = ({ isMaximized, setIsMaximized }) => {
                   )}
                 </div>
               </div>
-              
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <button
-                  onClick={toggleMenu}
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-                >
-                  {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                </button>
-              </div>
             </div>
           </div>
         </div>
-        
-        {/* Mobile menu */}
-        {menuOpen && (
-          <>
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 md:hidden" onClick={toggleMenu}></div>
-            <div className="fixed top-16 left-0 right-0 glass-card md:hidden shadow-xl animate-slide-down max-h-[calc(100vh-4rem)] overflow-y-auto z-40">
-              <div className="p-4 space-y-2">
-                <MobileNavLink
-                  to="/dashboard"
-                  icon={<Home className="h-5 w-5" />}
-                  label="Dashboard"
-                  active={location.pathname === "/dashboard"}
-                  onClick={toggleMenu}
-                />
-                
-                <MobileNavLink
-                  to="/announcement"
-                  icon={<Bell className="h-5 w-5" />}
-                  label="Announcements"
-                  active={location.pathname === "/announcement" || location.pathname === "/announcement-teacher"}
-                  onClick={toggleMenu}
-                />
-                
-                {canViewTeacherFeatures && (
-                  <MobileNavLink
-                    to="/announcement/archive"
-                    icon={<Archive className="h-5 w-5" />}
-                    label="Archive"
-                    active={location.pathname === "/announcement/archive"}
-                    onClick={toggleMenu}
-                  />
-                )}
-
-                {canViewTeacherFeatures && (
-                  <MobileNavLink
-                    to="/teacher/class-subjects"
-                    icon={<Layers className="h-5 w-5" />}
-                    label="Class Subjects"
-                    active={location.pathname.startsWith("/teacher/class-subjects")}
-                    onClick={toggleMenu}
-                  />
-                )}
-                
-                <div className="pt-4 mt-4 border-t border-gray-200">
-                  <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
-                      {(user?.user_fullname || 'U').charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">{user?.user_fullname}</p>
-                      <p className="text-xs text-gray-500">{user?.user_email}</p>
-                      {roleLabel && (
-                        <span className="mt-1 inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-blue-50 text-blue-700">
-                          {roleLabel}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <button
-                    onClick={() => {
-                      setAccountSettingsOpen(true);
-                      setMenuOpen(false);
-                    }}
-                    className="flex items-center w-full px-3 py-2 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <UserCog className="h-5 w-5 mr-3" />
-                    <span className="font-medium">Account Settings</span>
-                  </button>
-                  
-                  <button
-                    onClick={() => { 
-                      toggleMenu(); 
-                      logout(); 
-                    }}
-                    className="flex items-center w-full px-3 py-2 rounded-xl text-danger-600 hover:bg-danger-50 transition-colors"
-                  >
-                    <LogOut className="h-5 w-5 mr-3" />
-                    <span className="font-medium">Logout</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
       </div>
 
       {/* Account Settings Modal */}
@@ -296,22 +207,6 @@ const NavLink = ({ to, icon, label, active }) => (
       active 
         ? "bg-white/20 text-white shadow-lg" 
         : "text-white/80 hover:bg-white/10 hover:text-white"
-    }`}
-  >
-    {icon}
-    <span>{label}</span>
-  </Link>
-);
-
-// Mobile Nav Link Component
-const MobileNavLink = ({ to, icon, label, active, onClick }) => (
-  <Link
-    to={to}
-    onClick={onClick}
-    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-      active 
-        ? "bg-primary-50 text-primary-700 shadow-sm" 
-        : "text-gray-700 hover:bg-gray-50"
     }`}
   >
     {icon}

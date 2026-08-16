@@ -32,6 +32,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import StudentAttendancePage from "./pages/Teacher/StudentAttendancePage";
 import TeachersList from "./pages/Admin/TeachersList";
 import ClassesList from "./pages/Admin/ClassesList";
@@ -39,6 +40,7 @@ import SubjectManagementPage from "./pages/Admin/SubjectManagementPage";
 import PublicAnnouncement from './pages/Public/PublicAnnouncement';
 import InstallPrompt from './components/InstallPrompt';
 import AllAnnouncements from './pages/Student/AllAnnouncements';
+import StudentPortalProfilePage from './pages/Student/StudentProfilePage';
 import AccountActivationPage from "./pages/Teacher/AccountActivationPage"; // Add this import
 import AdminAnalyticsPage from "./pages/Admin/AdminAnalyticsPage";
 import SchoolYearManagementPage from "./pages/Admin/SchoolYearManagementPage";
@@ -53,6 +55,8 @@ import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SuperAdminAnalyticsPage from "./pages/SuperAdmin/SuperAdminAnalyticsPage";
 import LandingPage from "./pages/LandingPage";
 import { useSiteMetricsStore } from "./store/siteMetricsStore";
+import StudentBottomNav from "./components/Student/StudentBottomNav";
+import TeacherBottomNav from "./components/Teacher/TeacherBottomNav";
 
 // Role-based route protection
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -123,7 +127,7 @@ function App() {
  // Treat only public announcement detail pages as unauthenticated: /announcement/:id (excluding 'archive')
  const isPublicAnnouncementDetail = /^\/announcement\/(?!archive$)[^/]+$/.test(location.pathname);
  // Skip auth checking for login/signup and other public paths
- const isAuthPath = location.pathname === '/' ||
+  const isAuthPath = location.pathname === '/' ||
  location.pathname === '/login' || 
  location.pathname === '/signup' || 
  location.pathname === '/admin/login' ||
@@ -133,16 +137,31 @@ function App() {
  location.pathname.startsWith('/reset-password') ||
  location.pathname.startsWith('/activate-account') ||
  isPublicAnnouncementDetail;
+  const showStudentBottomNav = isAuthenticated && !isAuthPath && user?.user_role === 'student';
+  const showTeacherBottomNav = isAuthenticated && !isAuthPath && user?.user_role === 'teacher';
+  const showMobileBottomNav = showStudentBottomNav || showTeacherBottomNav;
+  const hasActiveSession = isAuthenticated && !!user;
 
   useEffect(() => {
-    // Only check auth if we're not on a login/signup page
-    if (!isAuthPath) {
-      console.log("App checking authentication for protected route...");
-      checkAuth();
-    } else {
+    if (isAuthPath) {
       console.log("Skipping auth check for public route:", location.pathname);
+      if (isCheckingAuth) {
+        useAuthStore.setState({ isCheckingAuth: false });
+      }
+      return;
     }
-  }, [checkAuth, location.pathname, isAuthPath]);
+
+    // Keep in-app navigation smooth once a session is already loaded.
+    if (hasActiveSession) {
+      if (isCheckingAuth) {
+        useAuthStore.setState({ isCheckingAuth: false });
+      }
+      return;
+    }
+
+    console.log("App checking authentication for protected route...");
+    checkAuth();
+  }, [checkAuth, hasActiveSession, isAuthPath, isCheckingAuth, location.pathname]);
 
   // Register a unique site visit once per page load (StrictMode-safe with sessionStorage)
   useEffect(() => {
@@ -151,7 +170,7 @@ function App() {
   }, [registerVisit, registerGuardRef]);
 
   // Only show loading indicator for protected routes
-  if (isCheckingAuth && !isAuthPath) {
+  if (isCheckingAuth && !isAuthPath && !hasActiveSession) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -185,8 +204,17 @@ function App() {
           />
         )}
         
-        <div className="flex-grow w-full">
-          <Routes>
+        <div className={`flex-grow w-full ${showMobileBottomNav ? 'pb-32 sm:pb-36 lg:pb-0' : ''}`}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              initial={showMobileBottomNav ? { opacity: 0 } : false}
+              animate={{ opacity: 1 }}
+              exit={showMobileBottomNav ? { opacity: 0 } : undefined}
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="min-h-full"
+            >
+          <Routes location={location}>
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/announcement/:id" element={<PublicAnnouncement />} />
@@ -368,6 +396,10 @@ function App() {
               element={<StudentRoute><AllAnnouncements /></StudentRoute>}
             />
             <Route
+              path="/student-profile"
+              element={<StudentRoute><StudentPortalProfilePage /></StudentRoute>}
+            />
+            <Route
               path="/student-report-card"
               element={<StudentRoute><StudentCard /></StudentRoute>}
             />
@@ -400,7 +432,11 @@ function App() {
               }
             />
           </Routes>
+            </motion.div>
+          </AnimatePresence>
         </div>
+        {showStudentBottomNav && <StudentBottomNav />}
+        {showTeacherBottomNav && <TeacherBottomNav />}
       </div>
       
       {/* Add the InstallPrompt component here, outside the main div */}

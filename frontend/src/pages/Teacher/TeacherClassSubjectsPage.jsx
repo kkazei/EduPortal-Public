@@ -154,7 +154,7 @@ const TeacherClassSubjectsPage = () => {
       transition={{ duration: 0.5 }}
       className="p-4 pt-20 sm:pt-24 sm:p-8 w-full max-w-7xl mx-auto"
     >
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
+      <div className="bg-blue-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden mb-8">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <svg width="180" height="180" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M160 0H40C17.9086 0 0 17.9086 0 40V160C0 182.091 17.9086 200 40 200H160C182.091 200 200 182.091 200 160V40C200 17.9086 182.091 0 160 0Z" fill="white"/>
@@ -266,13 +266,13 @@ const TeacherClassSubjectsPage = () => {
       {/* Confirm Remove Modal */}
       <AnimatePresence>
         {showConfirmModal && (
-          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={()=>setShowConfirmModal(false)}>
-            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md" onClick={e=>e.stopPropagation()}>
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="teacher-modal-overlay" onClick={()=>setShowConfirmModal(false)}>
+            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md" onClick={e=>e.stopPropagation()}>
               <h3 className="text-xl font-semibold text-red-600 mb-2">Remove Subject</h3>
               <p className="text-gray-600 mb-4">Remove <span className="font-medium">{subjectToRemove?.subject_name}</span> from this class?</p>
-              <div className="flex justify-end gap-3 mt-6">
-                <button onClick={()=>setShowConfirmModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleRemoveSubject} disabled={loadingMap.remove} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center">
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button onClick={()=>setShowConfirmModal(false)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 hover:bg-gray-50 sm:w-auto">Cancel</button>
+                <button onClick={handleRemoveSubject} disabled={loadingMap.remove} className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-white hover:bg-red-700 sm:w-auto">
                   {loadingMap.remove? <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"/> : <Trash className="h-4 w-4 mr-2"/>}
                   {loadingMap.remove? 'Removing...' : 'Remove'}
                 </button>
@@ -285,13 +285,13 @@ const TeacherClassSubjectsPage = () => {
       {/* Add All Modal */}
       <AnimatePresence>
         {showAddAllModal && (
-          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={()=>setShowAddAllModal(false)}>
-            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md" onClick={e=>e.stopPropagation()}>
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="teacher-modal-overlay" onClick={()=>setShowAddAllModal(false)}>
+            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md" onClick={e=>e.stopPropagation()}>
               <h3 className="text-xl font-semibold text-blue-600 mb-2">Add All Subjects</h3>
               <p className="text-gray-600 mb-4">Add all {availableSubjects.length} subjects to <span className="font-medium">{selectedClass?.grade_level} - {selectedClass?.section}</span>?</p>
-              <div className="flex justify-end gap-3 mt-6">
-                <button onClick={()=>setShowAddAllModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleAddAllSubjects} disabled={bulkActionLoading} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center">
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button onClick={()=>setShowAddAllModal(false)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 hover:bg-gray-50 sm:w-auto">Cancel</button>
+                <button onClick={handleAddAllSubjects} disabled={bulkActionLoading} className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-white hover:bg-blue-700 sm:w-auto">
                   {bulkActionLoading? <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"/> : <PlusCircle className="h-4 w-4 mr-2"/>}
                   {bulkActionLoading? 'Adding...' : 'Add All'}
                 </button>
@@ -304,13 +304,13 @@ const TeacherClassSubjectsPage = () => {
       {/* Remove All Modal */}
       <AnimatePresence>
         {showRemoveAllModal && (
-          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={()=>setShowRemoveAllModal(false)}>
-            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md" onClick={e=>e.stopPropagation()}>
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} className="teacher-modal-overlay" onClick={()=>setShowRemoveAllModal(false)}>
+            <motion.div initial={{ scale:.95, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:.95, opacity:0 }} className="teacher-modal-panel h-auto max-h-[calc(100dvh-2rem)] p-6 sm:max-w-md" onClick={e=>e.stopPropagation()}>
               <h3 className="text-xl font-semibold text-red-600 mb-2">Remove All Subjects</h3>
               <p className="text-gray-600 mb-4">Remove all {assignedSubjects.length} subjects from <span className="font-medium">{selectedClass?.grade_level} - {selectedClass?.section}</span>?</p>
-              <div className="flex justify-end gap-3 mt-6">
-                <button onClick={()=>setShowRemoveAllModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={handleRemoveAllSubjects} disabled={bulkActionLoading} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center">
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button onClick={()=>setShowRemoveAllModal(false)} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 hover:bg-gray-50 sm:w-auto">Cancel</button>
+                <button onClick={handleRemoveAllSubjects} disabled={bulkActionLoading} className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-white hover:bg-red-700 sm:w-auto">
                   {bulkActionLoading? <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"/> : <Trash className="h-4 w-4 mr-2"/>}
                   {bulkActionLoading? 'Removing...' : 'Remove All'}
                 </button>

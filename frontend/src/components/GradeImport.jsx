@@ -575,29 +575,30 @@ const GradeImport = ({ classId, currentStudentName, onImportComplete, onClose })
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      className="teacher-modal-overlay"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="teacher-modal-panel sm:max-w-4xl"
       >
-        <div className="flex justify-between items-center mb-6">
+        <div className="teacher-modal-header">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Import Grades from Excel</h2>
+            <h2 className="text-xl font-bold text-gray-800">Import Grades from Excel</h2>
             <p className="text-gray-600 text-sm mt-1">Importing for: <strong>{currentStudentName}</strong></p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
           >
             <X size={24} />
           </button>
         </div>
 
+        <div className="teacher-modal-body">
         {/* Quarter Selection */}
         <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="font-semibold text-blue-800 mb-2">Select Quarter:</h3>
               <p className="text-blue-700 text-sm">Choose which quarter these grades belong to</p>
@@ -605,7 +606,7 @@ const GradeImport = ({ classId, currentStudentName, onImportComplete, onClose })
             <select
               value={selectedQuarter}
               onChange={(e) => setSelectedQuarter(e.target.value)}
-              className="border border-blue-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full rounded-lg border border-blue-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 sm:w-auto"
             >
               <option value="1">1st Quarter</option>
               <option value="2">2nd Quarter</option>
@@ -692,7 +693,7 @@ const GradeImport = ({ classId, currentStudentName, onImportComplete, onClose })
             <h4 className="font-semibold text-gray-800 mb-3">
               Preview for Quarter {selectedQuarter}:
             </h4>
-            <div className="overflow-x-auto border rounded-lg">
+            <div className="max-h-[55vh] overflow-auto rounded-lg border">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -728,19 +729,21 @@ const GradeImport = ({ classId, currentStudentName, onImportComplete, onClose })
             </div>
           </div>
         )}
+        </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3">
+        <div className="teacher-modal-footer">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto"
           >
             Cancel
           </button>
           <button
             onClick={handleImport}
             disabled={!previewData || validationErrors.length > 0 || isProcessing}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+            className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {isProcessing ? (
               <>
@@ -754,6 +757,7 @@ const GradeImport = ({ classId, currentStudentName, onImportComplete, onClose })
               </>
             )}
           </button>
+        </div>
         </div>
       </motion.div>
     </motion.div>

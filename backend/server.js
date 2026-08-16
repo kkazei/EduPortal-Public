@@ -81,7 +81,7 @@ const startServer = async () => {
         // Schedule daily cleanup of users deleted > 7 days
         scheduleUserPurge();
         
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             if (process.env.NODE_ENV !== 'production') {
                 console.log(`✅ Server is running at http://localhost:${PORT}`);
             }

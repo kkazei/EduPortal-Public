@@ -21,23 +21,23 @@ const AnnouncementItem = ({ announcement, index, onAnnouncementClick }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="border border-gray-200 rounded-xl hover:shadow-lg transition-all bg-white overflow-hidden flex-shrink-0"
+      className="flex-shrink-0 overflow-hidden rounded-2xl border border-blue-100 bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-900/5"
     >
-      <div className="p-4">
+      <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="mb-3">
-          <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
+          <h3 className="mb-2 line-clamp-2 text-base font-bold text-slate-800 sm:text-lg">
             {announcement.title}
           </h3>
-          <div className="flex items-center text-gray-500 text-sm">
-            <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+          <div className="flex items-center text-sm text-slate-500">
+            <Calendar className="mr-2 h-4 w-4 flex-shrink-0 text-blue-500" />
             <span>{formatDate(announcement.created_at)}</span>
           </div>
         </div>
         
         {/* Content */}
         <div className="mb-3">
-          <div className={`text-gray-600 leading-relaxed text-sm ${
+          <div className={`text-sm leading-relaxed text-slate-600 ${
             expanded ? '' : 'line-clamp-2'
           }`}>
             {announcement.content}
@@ -46,7 +46,7 @@ const AnnouncementItem = ({ announcement, index, onAnnouncementClick }) => {
           {shouldShowReadMore && (
             <button
               onClick={toggleExpand}
-              className="inline-flex items-center text-blue-600 text-xs mt-1 hover:text-blue-800 transition-colors font-medium"
+              className="mt-1 inline-flex items-center text-xs font-semibold text-blue-600 transition-colors hover:text-blue-800"
             >
               {expanded ? (
                 <>
@@ -64,15 +64,15 @@ const AnnouncementItem = ({ announcement, index, onAnnouncementClick }) => {
         </div>
         
         {/* Footer */}
-        <div className="flex items-center justify-end pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-end border-t border-slate-100 pt-3">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onAnnouncementClick(index)}
-            className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all text-xs font-medium shadow-md hover:shadow-lg"
+            className="inline-flex items-center rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-md shadow-blue-900/10 transition-all hover:bg-blue-700 hover:shadow-lg"
           >
             <Eye className="w-3 h-3 mr-1.5" />
-            View Full
+            Announcement
           </motion.button>
         </div>
       </div>
@@ -82,28 +82,34 @@ const AnnouncementItem = ({ announcement, index, onAnnouncementClick }) => {
 
 const AnnouncementsList = ({ announcements, onAnnouncementClick, onViewAll, isLoading }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 h-[600px] flex flex-col">
+    <div className="flex flex-col rounded-3xl border border-blue-100 bg-white shadow-xl shadow-blue-900/5 lg:h-[620px]">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
-        <h2 className="text-2xl font-bold flex items-center text-gray-800">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-3 shadow-md">
-            <Bell className="w-5 h-5 text-white" />
-          </div>
-          Recent Announcements
-        </h2>
-        
- 
+      <div className="flex flex-shrink-0 items-start justify-between border-b border-blue-50 p-5 sm:items-center sm:p-6">
+        <div>
+          <h2 className="flex items-center text-xl font-bold text-slate-900 sm:text-2xl">
+            <div className="mr-3 flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
+              <Bell className="h-5 w-5 text-white" />
+            </div>
+            Recent Announcements
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Updates from your class adviser
+          </p>
+        </div>
+        <span className="hidden rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 sm:inline-flex">
+          {announcements?.length || 0} active
+        </span>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden min-h-0">
+      <div className="min-h-0 flex-1 overflow-hidden">
         {isLoading ? (
           <div className="flex flex-col justify-center items-center h-full">
             <Loader className="w-10 h-10 text-blue-500 animate-spin mb-3" />
             <span className="text-gray-600 font-medium">Loading announcements...</span>
           </div>
         ) : announcements && announcements.length > 0 ? (
-          <div className="h-full overflow-y-auto p-4">
+          <div className="max-h-[620px] overflow-y-auto p-4 lg:h-full lg:max-h-none">
             <div className="space-y-3">
               {announcements.map((announcement, index) => (
                 <AnnouncementItem 
@@ -116,25 +122,25 @@ const AnnouncementsList = ({ announcements, onAnnouncementClick, onViewAll, isLo
             </div>
             
             {/* View All Footer Button (alternative placement) */}
-            <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+            <div className="mt-6 border-t border-slate-100 pt-4 text-center">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onViewAll}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 text-gray-700 rounded-lg transition-all text-sm font-medium border border-gray-200 hover:border-gray-300"
+                className="inline-flex items-center rounded-2xl border border-blue-100 bg-blue-50 px-5 py-3 text-sm font-semibold text-blue-700 transition-all hover:border-blue-200 hover:bg-blue-100"
               >
-                View All Announcements
+                Announcements
                 <ArrowRight className="w-4 h-4 ml-2" />
               </motion.button>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <AlertCircle className="w-8 h-8 text-gray-400" />
+          <div className="flex min-h-80 flex-col items-center justify-center px-6 text-center lg:h-full">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50">
+              <AlertCircle className="h-8 w-8 text-blue-300" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Announcements</h3>
-            <p className="text-gray-500 max-w-sm leading-relaxed mb-4">
+            <h3 className="mb-2 text-xl font-semibold text-slate-700">No Announcements</h3>
+            <p className="mb-4 max-w-sm leading-relaxed text-slate-500">
               There are no active announcements at the moment. Check back later for updates!
             </p>
             
@@ -143,9 +149,9 @@ const AnnouncementsList = ({ announcements, onAnnouncementClick, onViewAll, isLo
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onViewAll}
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all text-sm font-medium shadow-md hover:shadow-lg"
+              className="inline-flex items-center rounded-2xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-900/10 transition-all hover:bg-blue-700 hover:shadow-lg"
             >
-              Browse All Announcements
+              Announcements
               <ArrowRight className="w-4 h-4 ml-2" />
             </motion.button>
           </div>

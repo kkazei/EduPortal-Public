@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Award, Settings, LogOut, X } from 'lucide-react';
+import { getOfficialStudentName, getStudentDisplayName } from '../../utils/studentDisplayName';
 
 const StudentMobileMenu = ({ 
   isOpen, 
@@ -17,6 +18,10 @@ const StudentMobileMenu = ({
       action(); // Execute action after a brief delay
     }, 150);
   };
+
+  const displayName = getStudentDisplayName({ currentStudent, user });
+  const officialName = getOfficialStudentName({ currentStudent, user });
+  const hasCustomDisplayName = displayName !== officialName;
 
   return (
     <AnimatePresence mode="wait">
@@ -50,12 +55,17 @@ const StudentMobileMenu = ({
               
               {/* Profile Section */}
               <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 bg-blue-700 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User className="w-10 h-10 text-white" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-800">
-                  {currentStudent?.first_name} {currentStudent?.last_name}
+                  {displayName}
                 </h2>
+                {hasCustomDisplayName && (
+                  <p className="text-gray-500 text-xs mt-1">
+                    Official: {officialName}
+                  </p>
+                )}
                 <p className="text-gray-500 text-sm mt-1">
                   {currentStudent?.class?.grade_level} - {currentStudent?.class?.section}
                 </p>
